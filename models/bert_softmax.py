@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # @Time    : 10/7/2020 1:58 PM
 # @Author  : Chloe Ouyang
-# @FileName: bert_for_ner.py
+# @FileName: bert_softmax.py
 
-from transformers import BertPreTrainedModel, BertModel, BertForTokenClassification
-from models.layers.crf_layer import *
+
+from transformers import BertForTokenClassification
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -32,6 +32,7 @@ class FocalLoss(nn.Module):
 
 
 class BERTClassFocalloss(BertForTokenClassification):
+    """重写父类TokenClassification的方法"""
     def forward(self, input_ids, attention_mask=None, token_type_ids=None,
                 position_ids=None, head_mask=None, labels=None, label_masks=None):
         outputs = self.bert(input_ids,
@@ -93,31 +94,4 @@ class BERTClass(BertForTokenClassification):
         return ((loss,) + output) if loss is not None else output
 
 
-class BERTCRFClass(BertPreTrainedModel):
-    def __init__(self, config, num_labels):
-        super().__init__(config)
-        self.bert = BertModel(config)
-        self.dropout = nn.Dropout(config.hidden_dropout_prob)
-        self.crf = LinearChainCRF(in_dim=config.hidden_size, num_tags=num_labels)
 
-        self.init_weights()
-        self.crf.init_weight()
-
-    def forward(self, input_ids, attention_mask=None, token_type_ids=None,
-                position_ids=None, head_mask=None, labels=None):
-        outputs = self.bert(input_ids,
-                            attention_mask=attention_mask,
-                            token_type_ids=token_type_ids,
-                            position_ids=position_ids,
-                            head_mask=head_mask)
-
-        sequence_output = outputs[0]  # (b, MAX_LEN, 768)
-
-        sequence_output = self.dropout(sequence_output)
-
-        outputs = (sequence_output,)
-
-        if labels is not None:
-            loss = self.crf.nll_loss(sequence_output.float(), labels, length_index=attention_mask)
-            outputs = (loss,) + outputs
-        return outputs

@@ -48,7 +48,7 @@ class BERTClassFocalloss(BertForTokenClassification):
 
         loss = None
         if labels is not None:
-            loss_fct = FocalLoss(gamma=2, ignore_index=-100)
+            loss_fct = FocalLoss(gamma=2, ignore_index=0)
             # Only keep active parts of the loss
             if attention_mask is not None:
                 active_loss = attention_mask.view(-1) == 1
@@ -63,7 +63,7 @@ class BERTClassFocalloss(BertForTokenClassification):
         return ((loss,) + output) if loss is not None else output
 
 
-class BERTClass(BertForTokenClassification):
+class BERTSoftmax(BertForTokenClassification):
     def forward(self, input_ids, attention_mask=None, token_type_ids=None,
                 position_ids=None, head_mask=None, labels=None):
         outputs = self.bert(input_ids,

@@ -8,7 +8,7 @@ from models.layers.crf_layer import *
 import torch.nn as nn
 
 
-class BERTCRFClass(BertPreTrainedModel):
+class BERTCRF(BertPreTrainedModel):
     """继承父类PreTrainedModel"""
     def __init__(self, config, num_labels):
         super().__init__(config)
@@ -37,3 +37,5 @@ class BERTCRFClass(BertPreTrainedModel):
             loss = self.crf.nll_loss(sequence_output.float(), labels, length_index=attention_mask)
             outputs = (loss,) + outputs
         return outputs
+
+

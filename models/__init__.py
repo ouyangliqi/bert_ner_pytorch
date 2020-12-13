@@ -3,3 +3,5 @@
 # @Author  : Chloe Ouyang
 # @FileName: __init__.py
 
+from .bert_softmax import BERTSoftmax
+from .bert_crf import BERTCRF

@@ -19,8 +19,8 @@ CUDA_VISIBLE_DEVICES=2 python bin/main.py \
     --learning_rate 2e-5 \
     --do_train \
     --do_test \
-    --trainset  $DATASET/appen/train_data_raw.json \
-    --evalset $DATASET/appen/val_data_raw.json \
-    --testset $DATASET/appen/test_data_raw.json \
+    --trainset  $DATASET/appen_not_filter/train_data_raw.json \
+    --evalset $DATASET/appen_not_filter/val_data_raw.json \
+    --testset $DATASET/appen_not_filter/test_data_raw.json \
     --bert_load_mode bert_only \
     --model_save_path $MODEL_PATH

@@ -132,7 +132,7 @@ def readfile(filename, tokenizer, outdict=False):
     sents, labels = [], []  # list of lists
 
     for entry in entries:
-        if not outdict:
+        if outdict:
             if not entry['outdict']:
                 continue
         sentence = [i.lower() if len(i.encode('utf-8')) != 4 else ' ' for i in entry['content']]

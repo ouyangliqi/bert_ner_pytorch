@@ -54,7 +54,7 @@ def test(params, model, ner_processor):
 
     run_eval(params, model, test_iter)
     if params["bert_load_mode"] == "bert_only":
-        out_dict_test_examples = ner_processor.get_outdict_test_examples(params['testset'])
+        out_dict_test_examples = ner_processor.get_outdic_test_examples(params['testset'])
 
         out_dict_test_dataset = NERDataSet(data_list=out_dict_test_examples, tokenizer=tokenizer,
                                            label_map=params["label_map"],

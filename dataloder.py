@@ -115,7 +115,7 @@ def split_max_len(entry):
     return entry_f, entry_b
 
 
-def readfile(filename, tokenizer):
+def readfile(filename, tokenizer, outdict=False):
     """
     read file
     """
@@ -132,6 +132,9 @@ def readfile(filename, tokenizer):
     sents, labels = [], []  # list of lists
 
     for entry in entries:
+        if not outdict:
+            if not entry['outdict']:
+                continue
         sentence = [i.lower() if len(i.encode('utf-8')) != 4 else ' ' for i in entry['content']]
         if len(sentence) > MAX_LEN:
             # TODO: need to split sentences and ners
@@ -189,9 +192,9 @@ class DataProcessor(object):
         raise NotImplementedError()
 
     @classmethod
-    def _read_file(cls, input_file, quotechar=None):
+    def _read_file(cls, input_file, outdict=False, quotechar=None):
         """Reads a tab separated value file."""
-        return readfile(input_file, cls.tokenizer)
+        return readfile(input_file, cls.tokenizer, outdict=outdict)
 
 
 class NerProcessor(DataProcessor):
@@ -211,6 +214,10 @@ class NerProcessor(DataProcessor):
         """See base class."""
         return self._create_examples(
             self._read_file(data_dir), "test")
+
+    def get_outdic_test_examples(self, data_dir):
+        return self._create_examples(
+            self._read_file(data_dir, outdict=True), "test")
 
     def get_labels(self):
         return ["X", "O", "B-Activity", "B-Brand", "B-Channel", "B-Location", "B-Money", "B-Person", "B-Product",

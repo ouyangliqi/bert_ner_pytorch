@@ -53,6 +53,19 @@ def test(params, model, ner_processor):
                                 num_workers=0)
 
     run_eval(params, model, test_iter)
+    if params["bert_load_mode"] == "bert_only":
+        out_dict_test_examples = ner_processor.get_outdict_test_examples(params['testset'])
+
+        out_dict_test_dataset = NERDataSet(data_list=out_dict_test_examples, tokenizer=tokenizer,
+                                           label_map=params["label_map"],
+                                           max_len=256)
+
+        out_dict_test_iter = data.DataLoader(dataset=out_dict_test_dataset,
+                                             batch_size=params['batch_size'],
+                                             shuffle=False,
+                                             num_workers=0)
+        print("out dict performance")
+        run_eval(params, model, out_dict_test_iter)
 
 
 def run_eval(params, model, iter_data):

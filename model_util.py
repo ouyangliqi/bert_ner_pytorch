@@ -189,7 +189,7 @@ def evaluate(params, predictions, true_labels):
     print(table)
 
 
-def my_classification_report(res, micro, digits=2):
+def my_classification_report(res, digits=2):
     name_width = 0
     for e in res.keys():
         name_width = max(name_width, len(e))

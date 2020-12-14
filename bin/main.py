@@ -14,6 +14,7 @@ from models import BERTSoftmax, BERTCRF
 from dataloder import NerProcessor
 from transformers import BertConfig, BertTokenizer
 from model_util import from_state_dict
+# from test import test_model_state
 
 
 def main():
@@ -56,7 +57,10 @@ def main():
     parser.add_argument("--bert_load_mode", default='test', help="training, eval or test options")
     parser.add_argument("--bert_model", default='bert-base-chinese', help="which base model to be selected")
     parser.add_argument("--model", default='crf', help="which model to be selected")
-    parser.add_argument("--model_save_path", default='{}/checkpoints/model.torch'.format(BASE_DIR), help="which model to be selected")
+    parser.add_argument("--model_load_path", default='{}/checkpoints/model.torch'.format(BASE_DIR),
+                        help="which model to be selected")
+    parser.add_argument("--model_save_path", default='{}/checkpoints/model.torch'.format(BASE_DIR),
+                        help="which model to be selected")
 
     args = parser.parse_args()
     params = vars(args)
@@ -88,7 +92,7 @@ def main():
             model = BERTCRF.from_pretrained(bert_model, config=config, num_labels=len(label_map))
 
     elif params["bert_load_mode"] == "bert_only":
-        all_state = torch.load(params["model_save_path"])
+        all_state = torch.load(params["model_load_path"])
 
         if params["model"] == "softmax":
             model = BERTSoftmax.from_pretrained(bert_model, num_labels=len(label_map))
@@ -97,6 +101,7 @@ def main():
             model = BERTCRF.from_pretrained(bert_model, config=config, num_labels=len(label_map))
         # print(all_state.keys())
         model = from_state_dict(model, all_state)
+        # test_model_state(params, model)
 
     model.to(params["device"])
     print("-------------------model loaded------------------")

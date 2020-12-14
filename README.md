@@ -4,7 +4,17 @@ This project is for bert ner model. Still working on.
 
 dataset 
 
-
+```json
+{
+"content":".....",
+"ner":[{
+	"text_segment":"",
+    "label_name":"",
+    "start_ind":"",
+    "end_ind": ""}, 
+]
+}
+```
 
 model
 

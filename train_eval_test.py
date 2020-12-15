@@ -53,7 +53,7 @@ def test(params, model, ner_processor):
                                 num_workers=0)
 
     run_eval(params, model, test_iter)
-    if params["bert_load_mode"] == "bert_only":
+    if params["do_outdict"]:
         out_dict_test_examples = ner_processor.get_outdic_test_examples(params['testset'])
 
         out_dict_test_dataset = NERDataSet(data_list=out_dict_test_examples, tokenizer=tokenizer,

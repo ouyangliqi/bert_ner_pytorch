@@ -52,7 +52,8 @@ def main():
 
     # mode
     parser.add_argument("--do_train", action='store_true', help="Whether to run training.")
-    parser.add_argument("--do_test", action='store_true', help="Whether to run training.")
+    parser.add_argument("--do_test", action='store_true', help="Whether to run testing.")
+    parser.add_argument("--do_outdict", action='store_true', help="Whether to run testing result of out dictionary.")
     parser.add_argument("--bert_load_mode", default='test', help="training, eval or test options")
     parser.add_argument("--bert_model", default='bert-base-chinese', help="which base model to be selected")
     parser.add_argument("--model", default='crf', help="which model to be selected")

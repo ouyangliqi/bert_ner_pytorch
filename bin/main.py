@@ -14,7 +14,6 @@ from models import BERTSoftmax, BERTCRF
 from dataloder import NerProcessor
 from transformers import BertConfig, BertTokenizer
 from model_util import from_state_dict
-# from test import test_model_state
 
 
 def main():
@@ -24,6 +23,7 @@ def main():
     parser.add_argument("--vocab_size", default=30000, help="Vocabulary size", type=int)
     parser.add_argument("--embed_size", default=256, help="Words embeddings dimension", type=int)
     parser.add_argument("--learning_rate", default=0.001, help="Learning rate", type=float)
+    parser.add_argument("--crf_learning_ratio", default=28, help="CRF Learning rate", type=int)
     parser.add_argument("--adagrad_init_acc", default=0.1,
                         help="Adagrad optimizer initial accumulator value. Please refer to the Adagrad optimizer "
                              "API documentation on tensorflow site for more details.", type=float)
@@ -101,7 +101,6 @@ def main():
             model = BERTCRF.from_pretrained(bert_model, config=config, num_labels=len(label_map))
         # print(all_state.keys())
         model = from_state_dict(model, all_state)
-        # test_model_state(params, model)
 
     model.to(params["device"])
     print("-------------------model loaded------------------")

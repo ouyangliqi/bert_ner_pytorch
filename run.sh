@@ -35,6 +35,6 @@ CUDA_VISIBLE_DEVICES=2 python bin/main.py \
     --do_outdict \
     --trainset  $DATASET/appen_filter_others/train_data_raw.json \
     --evalset $DATASET/appen_filter_others/val_data_raw.json \
-    --testset $DATASET/appen_filter_others/test_data_raw.json \
+    --testset $DATASET/appen_not_filter/test_data_raw.json \
     --bert_load_mode from_pretrained \
     --model_save_path $MODEL_PATH

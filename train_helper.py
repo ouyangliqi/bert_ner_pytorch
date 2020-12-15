@@ -15,7 +15,7 @@ def train_model(params, model, train_iter, eval_iter):
         crf_param_optimizer = list(model.crf.named_parameters())
 
         optimizer_grouped_parameters = [{"params": [p for n, p in bert_param_optimizer], "lr": params["learning_rate"]},
-                                        {"params": [p for n, p in crf_param_optimizer], "lr": 28 * params["learning_rate"]}]
+                                        {"params": [p for n, p in crf_param_optimizer], "lr": params["crf_learning_ratio"] * params["learning_rate"]}]
 
     else:
         param_optimizer = list(model.named_parameters())

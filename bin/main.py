@@ -10,6 +10,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
 from train_eval_test import train, test
 import torch
+torch.manual_seed(12345)
 from models import BERTSoftmax, BERTCRF
 from dataloder import NerProcessor
 from transformers import BertConfig, BertTokenizer
@@ -23,7 +24,7 @@ def main():
     parser.add_argument("--vocab_size", default=30000, help="Vocabulary size", type=int)
     parser.add_argument("--embed_size", default=256, help="Words embeddings dimension", type=int)
     parser.add_argument("--learning_rate", default=0.001, help="Learning rate", type=float)
-    parser.add_argument("--crf_learning_rate", default=28, help="Learning rate", type=int)
+    parser.add_argument("--crf_learning_ratio", default=28, help="Learning rate", type=int)
     parser.add_argument("--adagrad_init_acc", default=0.1,
                         help="Adagrad optimizer initial accumulator value. Please refer to the Adagrad optimizer "
                              "API documentation on tensorflow site for more details.", type=float)
@@ -58,6 +59,7 @@ def main():
     parser.add_argument("--bert_load_mode", default='test', help="training, eval or test options")
     parser.add_argument("--bert_model", default='bert-base-chinese', help="which base model to be selected")
     parser.add_argument("--model", default='crf', help="which model to be selected")
+    parser.add_argument("--model_load_path", default='{}/checkpoints/model.torch'.format(BASE_DIR), help="which model to be loaded")
     parser.add_argument("--model_save_path", default='{}/checkpoints/model.torch'.format(BASE_DIR), help="which model to be selected")
 
     args = parser.parse_args()

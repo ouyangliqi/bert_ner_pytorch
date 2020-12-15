@@ -129,31 +129,24 @@ def get_evaluation_result(prediction_chunk, label_chunk):
 
 def ner_index(output):
     # dict_name = {v: k for k, v in name_dict.items()}
-    result = []
-    single_result = []
-    for i in range(len(output)):
-        if output[i] == 'O':
-            if len(single_result) != 0:
-                result.append((single_result[0][0],
-                               single_result[-1][0] + 1,
-                               single_result[0][1].split('-')[1]))
-                single_result = []
-        elif ('B-' in output[i]) or ('S-' in output[i]):
-            if len(single_result) != 0:
-                result.append((single_result[0][0],
-                               single_result[-1][0] + 1,
-                               single_result[0][1].split('-')[1]))
-            single_result = []
-            single_result.append([i, output[i]])
-        elif ('I-' in output[i]) or ('E-' in output[i]):
-            if len(single_result) != 0:
-                single_result.append([i, output[i]])
-    if len(single_result) != 0:
-        result.append((single_result[0][0],
-                       single_result[-1][0] + 1,
-                       single_result[0][1].split('-')[1]))
-    return result
+    from seqeval.scheme import IOBES
+    from seqeval.scheme import Entities
 
+    def get_entity_seqeval_strcit_iobes(tag):
+        """Gets entities from sequence.
+        Args:
+            seq (list): sequence of labels.
+        Returns:
+            list: list of (chunk_type, chunk_start, chunk_end).
+        Example:
+            seq = ['B-PER', 'E-PER', 'O', 'S-LOC']
+            get_entity_seqeval_strcit_iobes(seq)
+            #output
+            [(0, 2, 'PER'), (3, 4, 'LOC')]
+        """
+        chunks = Entities([tag], IOBES).entities
+        return [(c.start, c.end, c.tag) for c in chunks[0]]
+    return get_entity_seqeval_strcit_iobes([i for i in output if i != 'X'])
 
 def evaluate(params, predictions, true_labels):
     id2tag = params["id2tag"]

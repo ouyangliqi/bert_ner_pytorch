@@ -250,7 +250,7 @@ class NERDataSet(data.Dataset):
         label_list = ['[CLS]']
 
         input_ids = [self.tokenizer.convert_tokens_to_ids('[CLS]')]
-        label_ids = [self.label_map['X']]
+        label_ids = [self.label_map['O']]
 
         # iterate over individual tokens and their labels
         tokens = self.tokenizer.tokenize(text)
@@ -276,7 +276,7 @@ class NERDataSet(data.Dataset):
         word_tokens.append('[SEP]')
         label_list.append('[SEP]')
         input_ids.append(self.tokenizer.convert_tokens_to_ids('[SEP]'))
-        label_ids.append(self.label_map['X'])
+        label_ids.append(self.label_map['O'])
 
         assert len(word_tokens) == len(label_list) == len(input_ids) == len(label_ids)
 

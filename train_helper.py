@@ -63,6 +63,7 @@ def train_model(params, model, train_iter, eval_iter):
         # eval
         test_precision, test_recall, test_f1 = run_quick_evaluate(params, model, eval_iter)
         if test_f1 > best_acc:
+            print("-------------------save model----------------------")
             torch.save(model.state_dict(), params['model_save_path'])
         print(f'Epoch: {_}, Loss:  {loss.item()}')
 

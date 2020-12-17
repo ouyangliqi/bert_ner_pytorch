@@ -8,11 +8,12 @@ import torch
 
 def from_state_dict(model, pretrain_state_dict):
     state_dict = model.state_dict()
+    new_pretrain_state_dict = dict()
     for key in list(pretrain_state_dict):
-        if not key.startswith("bert."):
+        if key.startswith("bert."):
             # logger.info(f"from_state_dict: Dropping {key}")
-            del pretrain_state_dict[key]
-    state_dict.update(pretrain_state_dict)
+            new_pretrain_state_dict[key] = pretrain_state_dict[key]
+    state_dict.update(new_pretrain_state_dict)
     model.load_state_dict(state_dict)
     return model
 
@@ -128,7 +129,6 @@ def get_evaluation_result(prediction_chunk, label_chunk):
 
 
 def ner_index(output):
-    # dict_name = {v: k for k, v in name_dict.items()}
     from seqeval.scheme import IOBES
     from seqeval.scheme import Entities
 
@@ -146,7 +146,9 @@ def ner_index(output):
         """
         chunks = Entities([tag], IOBES).entities
         return [(c.start, c.end, c.tag) for c in chunks[0]]
+
     return get_entity_seqeval_strcit_iobes([i for i in output if i != 'X'])
+
 
 def evaluate(params, predictions, true_labels):
     id2tag = params["id2tag"]
@@ -178,11 +180,11 @@ def evaluate(params, predictions, true_labels):
     f1 = 2 * p * r / (p + r) if correct_preds > 0 else 0
 
     res = get_evaluation_result(chunk_pred_labels, chunk_true_labels)
-    table = my_classification_report(res, (p, r, f1))
+    table = classification_report(res)
     print(table)
 
 
-def my_classification_report(res, micro, digits=2):
+def classification_report(res, digits=2):
     name_width = 0
     for e in res.keys():
         name_width = max(name_width, len(e))

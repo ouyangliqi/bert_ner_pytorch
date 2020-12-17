@@ -5,7 +5,7 @@
 from tqdm import tqdm
 import torch
 from transformers import AdamW, get_linear_schedule_with_warmup
-from model_util import run_quick_evaluate
+from model_util import run_eval_f1_score
 
 
 def train_model(params, model, train_iter, eval_iter):
@@ -61,9 +61,8 @@ def train_model(params, model, train_iter, eval_iter):
             model.zero_grad()
 
         # eval
-        test_precision, test_recall, test_f1 = run_quick_evaluate(params, model, eval_iter)
+        test_f1 = run_eval_f1_score(params, model, eval_iter)
         if test_f1 > best_acc:
-            print("-------------------save model----------------------")
             torch.save(model.state_dict(), params['model_save_path'])
         print(f'Epoch: {_}, Loss:  {loss.item()}')
 

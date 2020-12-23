@@ -1,6 +1,6 @@
 #!/bin/bash
-MODEL_PATH_A=checkpoints/ner-dl_seed1/pretrain-model.torch
-MODEL_PATH_B=checkpoints/ner-dl_seed1/finetune-model.torch
+MODEL_PATH_A=checkpoints/noisy_data_4_seed12345/pretrain-model.torch
+MODEL_PATH_B=checkpoints/noisy_data_4_seed12345/finetune-model.torch
 DATASET=datasets
 CUDA_VISIBLE_DEVICES=2 python bin/main.py \
     --model crf \
@@ -9,9 +9,9 @@ CUDA_VISIBLE_DEVICES=2 python bin/main.py \
     --epochs 5 \
     --do_train \
     --do_test \
-    --trainset  $DATASET/ner-dl_raw_data_sent/train_data_raw.json \
-    --evalset $DATASET/ner-dl_raw_data_sent/test_data_raw.json \
-    --testset $DATASET/ner-dl_raw_data_sent/test_data_raw.json \
+    --trainset  $DATASET/noisy_data_4/train_data_raw.json \
+    --evalset $DATASET/noisy_data_4/test_data_raw.json \
+    --testset $DATASET/noisy_data_4/test_data_raw.json \
     --bert_load_mode from_pretrained \
     --model_save_path $MODEL_PATH_A
 

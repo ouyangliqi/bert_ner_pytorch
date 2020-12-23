@@ -127,6 +127,11 @@ def run_eval_classification_report(params, model, iter_data):
     print(classification_report(valid_tags, pred_tags, mode='strict', scheme=IOBES, digits=4))
 
 
+def run_eval_classification_report_dict(params, model, iter_data):
+    pred_tags, valid_tags = evaulate(params, model, iter_data)
+    return classification_report(valid_tags, pred_tags, mode='strict', scheme=IOBES, digits=4, output_dict=True)
+
+
 def run_eval_f1_score(params, model, iter_data):
     pred_tags, valid_tags = evaulate(params, model, iter_data)
     return f1_score(valid_tags, pred_tags, mode='strict', scheme=IOBES)

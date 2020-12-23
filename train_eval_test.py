@@ -6,7 +6,7 @@ from train_helper import train_model
 from dataloder import NerProcessor, NERDataSet
 from torch.utils import data
 from transformers import BertTokenizer
-from model_util import run_eval_classification_report
+from model_util import run_eval_classification_report, run_eval_classification_report_dict
 
 
 def train(params, model, ner_processor):
@@ -37,7 +37,7 @@ def train(params, model, ner_processor):
     train_model(params, model, train_iter, eval_iter)
 
 
-def test(params, model, ner_processor):
+def test(params, model, ner_processor, output_dict=False):
     tokenizer = BertTokenizer.from_pretrained(params["bert_model"])
 
     test_examples = ner_processor.get_test_examples(params['testset'])
@@ -49,8 +49,10 @@ def test(params, model, ner_processor):
                                 batch_size=params['batch_size'],
                                 shuffle=False,
                                 num_workers=0)
-
-    run_eval_classification_report(params, model, test_iter)
+    if output_dict:
+        overall = run_eval_classification_report_dict(params, model, test_iter)
+    else:
+        run_eval_classification_report(params, model, test_iter)
 
     if params["do_outdict"]:
         out_dict_test_examples = ner_processor.get_outdic_test_examples(params['testset'])
@@ -63,7 +65,13 @@ def test(params, model, ner_processor):
                                              batch_size=params['batch_size'],
                                              shuffle=False,
                                              num_workers=0)
-        print("out dict performance")
-        run_eval_classification_report(params, model, out_dict_test_iter)
+        if output_dict:
+            out_dict = run_eval_classification_report_dict(params, model, out_dict_test_iter)
+        else:
+            print("out dict performance")
+            run_eval_classification_report(params, model, out_dict_test_iter)
+
+    if output_dict:
+        return overall, out_dict
 
 

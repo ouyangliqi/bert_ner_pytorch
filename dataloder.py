@@ -220,11 +220,11 @@ class NerProcessor(DataProcessor):
             self._read_file(data_dir, outdict=True), "test")
 
     def get_labels(self):
-        return ["X", "O", "B-Author", "B-Brand", "B-Company", "B-Job Title", "B-Location", "B-Person", "B-Product",
-                "B-Source", "B-Spam/Ad", "B-Time",
-                "E-Author", "E-Brand", "E-Company", "E-Job Title", "E-Location", "E-Person", "E-Product", "E-Source", "E-Spam/Ad", "E-Time",
-                "I-Author", "I-Brand", "I-Company", "I-Job Title", "I-Location", "I-Person", "I-Product", "I-Source", "I-Spam/Ad", "I-Time",
-                "S-Author", "S-Brand", "S-Company", "S-Job Title", "S-Location", "S-Person", "S-Product", "S-Source", "S-Spam/Ad", "S-Time",]
+        return ["X", "O", "B-Activity", "B-Brand", "B-Channel", "B-Location", "B-Money", "B-Person", "B-Product",
+                "B-Time",
+                "E-Activity", "E-Brand", "E-Channel", "E-Location", "E-Money", "E-Person", "E-Product", "E-Time",
+                "I-Activity", "I-Brand", "I-Channel", "I-Location", "I-Money", "I-Person", "I-Product", "I-Time",
+                "S-Activity", "S-Brand", "S-Channel", "S-Location", "S-Money", "S-Person", "S-Product", "S-Time"]
 
     @staticmethod
     def _create_examples(lines, set_type):

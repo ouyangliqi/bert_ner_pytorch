@@ -10,7 +10,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
 from train_eval_test import train, test
 import torch
-torch.manual_seed(12345)
+torch.manual_seed(1)
 from models import BERTSoftmax, BERTCRF
 from dataloder import NerProcessor
 from transformers import BertConfig, BertTokenizer

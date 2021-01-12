@@ -20,6 +20,33 @@ def from_state_dict(model, pretrain_state_dict):
     return model
 
 
+def get_word_index_with_tokenizer(text, tokenizer):
+    originial_index = 0
+    word_index = []
+
+    for token in tokenizer.tokenize(text):
+        if token == '[UNK]':
+            word_index.append([originial_index, originial_index + 1])
+            originial_index += 1
+            continue
+
+        if token.startswith("##"):
+            token = token[2:]
+
+        tmp = []
+        start_ind = text.find(token, originial_index)
+        originial_index = start_ind
+        for index, char in enumerate(token):
+            if char == text[originial_index]:
+                tmp.append(char)
+                originial_index += 1
+        assert ''.join(tmp) == token
+        end_ind = originial_index
+
+        word_index.append([start_ind, end_ind])
+    return word_index
+
+
 def get_evaluation_result(prediction_chunk, label_chunk):
     final_evaluate = dict()
     correct_preds = dict()
@@ -69,7 +96,7 @@ def ner_index(output):
     return get_entity_seqeval_strcit_iobes([i for i in output if i != 'X'])
 
 
-def evaulate(params, model, iter_data):
+def evaluate(params, model, iter_data):
     device = params["device"]
 
     model = model.eval()
@@ -123,15 +150,17 @@ def evaulate(params, model, iter_data):
 
 
 def run_eval_classification_report(params, model, iter_data):
-    pred_tags, valid_tags = evaulate(params, model, iter_data)
+    pred_tags, valid_tags = evaluate(params, model, iter_data)
     print(classification_report(valid_tags, pred_tags, mode='strict', scheme=IOBES, digits=4))
 
 
 def run_eval_classification_report_dict(params, model, iter_data):
-    pred_tags, valid_tags = evaulate(params, model, iter_data)
+    pred_tags, valid_tags = evaluate(params, model, iter_data)
     return classification_report(valid_tags, pred_tags, mode='strict', scheme=IOBES, digits=4, output_dict=True)
 
 
 def run_eval_f1_score(params, model, iter_data):
-    pred_tags, valid_tags = evaulate(params, model, iter_data)
+    pred_tags, valid_tags = evaluate(params, model, iter_data)
     return f1_score(valid_tags, pred_tags, mode='strict', scheme=IOBES)
+
+

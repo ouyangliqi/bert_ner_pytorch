@@ -4,7 +4,7 @@
 # @FileName: dataloder.py
 import torch
 from torch.utils import data
-from util import is_overlapping, read_json
+from utils import is_overlapping, read_json
 
 MAX_LEN = 256 - 2
 

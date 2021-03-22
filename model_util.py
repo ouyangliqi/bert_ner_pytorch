@@ -149,6 +149,62 @@ def evaluate(params, model, iter_data):
     return pred_tags, valid_tags
 
 
+def evaluate_with_loss(params, model, iter_data):
+    device = params["device"]
+
+    model = model.eval()
+    loss_lst, predictions, true_labels, scores_1, scores_2 = [], [], [], [], []
+    for step, batch in enumerate(iter_data):
+        batch = tuple(t.to(device) for t in batch)
+        b_input_ids, b_labels, b_input_mask, b_token_type_ids = batch
+
+        with torch.no_grad():
+            output = model(b_input_ids, token_type_ids=b_token_type_ids, attention_mask=b_input_mask, labels=b_labels)
+
+        loss, logits = output[:2]
+        loss_lst.append(loss)
+        label_ids = b_labels.to('cpu').numpy()
+
+        if params["model"] == "softmax":
+            logits = logits.detach().cpu().numpy()
+
+            prediction = [list(p) for p in np.argmax(logits, axis=2)]
+            assert len(prediction) == len(label_ids)
+
+            for pred, lab in zip(prediction, label_ids):
+                preds = []
+                labels = []
+                for p, l in zip(pred, lab):
+                    if l != 0:
+                        preds.append(p)
+                        labels.append(l)
+                assert len(preds) == len(labels)
+                predictions.append(preds)
+                true_labels.append(labels)
+        else:
+            paths, scores = model.crf.viterbi_decode(logits, length_index=b_input_mask, top_k=2)
+            assert len(paths) == len(label_ids)
+            scores_1.append(scores[0][0])
+            scores_2.append(scores[0][1])
+
+            for pred, lab in zip(paths, label_ids):
+                preds = []
+                labels = []
+                for p, l in zip(pred[0], lab):
+                    if l != 0:
+                        preds.append(p)
+                        labels.append(l)
+                assert len(preds) == len(labels)
+                predictions.append(preds)
+                true_labels.append(labels)
+
+    assert len(predictions) == len(true_labels)
+    id2tag = params["id2tag"]
+    pred_tags = [[id2tag[p_i] for p_i in p] for p in predictions]
+    valid_tags = [[id2tag[l_i] for l_i in l] for l in true_labels]
+    return loss_lst, pred_tags, valid_tags, scores_1, scores_2
+
+
 def run_eval_classification_report(params, model, iter_data):
     pred_tags, valid_tags = evaluate(params, model, iter_data)
     print(classification_report(valid_tags, pred_tags, mode='strict', scheme=IOBES, digits=4))
